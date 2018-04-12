@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Photo from './Component/photo'
+import Photo from './Component/photo';
+import axios from 'axios';
 
 class App extends Component {
   constructor(){
@@ -11,9 +12,35 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this.loadImage();  
+  }
+
   retunMeUrl = () => {
     return (this.state.unphoto_url);
   }
+
+  //call to load image
+  loadImage = () => {
+      var APP_ID = 'e86c61f24845f42eb20b5fe78090e35369ed65ddf26248334f00413bbca2353d';
+      var query = 'baby';
+
+      axios
+        .get(
+//          `https://api.unsplash.com/photos/random/?w=200&h=200&count=1&client_id=${APP_ID}`
+//          `https://api.unsplash.com/search/photos/?page=1&per_page=1&query=${query}&client_id=${APP_ID}`
+          `https://api.unsplash.com/photos/random/?query=${query}&client_id=${APP_ID}`
+        )
+      .then(data => {
+        console.log(data.data.urls);
+        this.setState({unphoto_url:data.data.urls.thumb});
+      })
+      .catch(err => {
+        console.log('Error happened during fetching!', err);
+      });
+
+  }
+
 
   reqNewImage = (event) => {
     console.log("event raised");
@@ -29,6 +56,8 @@ class App extends Component {
 
       this.setState({newphoto: true});      
     }
+
+    this.loadImage();
   }
 
 
